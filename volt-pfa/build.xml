@@ -1,0 +1,35 @@
+<project name="volt-pfa" default="dist" basedir=".">
+  <property name="src" location="src"/>
+  <property name="dest" location="obj"/>
+  <property name="lib" location="lib"/>
+  <property name="jar.name" value="volt-pfa"/>
+
+  <presetdef name="javac">
+    <javac includeantruntime="false" srcdir="${src}" destdir="${dest}" />
+  </presetdef>
+
+  <target name="compile" description="Compile the Java source">
+    <mkdir dir="${dest}"/>
+    <javac>
+      <classpath>
+        <fileset dir="${lib}">
+          <include name="*.jar" />
+        </fileset>
+      </classpath>
+    </javac>
+  </target>
+
+  <target name="dist" depends="compile" description="Generate the jar file">
+    <jar destfile="${jar.name}.jar" basedir="${dest}" filesetmanifest="skip">
+      <manifest>
+        <attribute name="Main-Class" value="Main"/>
+      </manifest>
+      <zipgroupfileset dir="${lib}" includes="*.jar"/>
+    </jar>
+  </target>
+
+  <target name="clean" description="Clean up">
+    <delete dir="${dest}"/>
+    <delete file="${jar.name}.jar"/>
+  </target>
+</project>
