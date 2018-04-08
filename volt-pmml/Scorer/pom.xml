@@ -1,0 +1,46 @@
+<?xml version="1.0" ?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>org.voltdb</groupId>
+    <artifactId>pmml-udf</artifactId>
+    <version>1.0</version>
+    <name>pmml-udf</name>
+
+    <properties>
+        <encoding>UTF-8</encoding>
+        <scalaVersion>2.11.8</scalaVersion>
+        <scalaBinaryVersion>2.11</scalaBinaryVersion>
+        <sparkVersion>2.3.0</sparkVersion>
+    </properties>
+
+    <dependencies>
+        <!-- https://mvnrepository.com/artifact/org.jpmml/pmml-evaluator -->
+        <dependency>
+            <groupId>org.jpmml</groupId>
+            <artifactId>pmml-evaluator</artifactId>
+            <version>1.4.1</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.jpmml/pmml-model -->
+        <dependency>
+            <groupId>org.jpmml</groupId>
+            <artifactId>pmml-model</artifactId>
+            <version>1.4.1</version>
+        </dependency>
+  </dependencies>
+
+  <build>
+      <sourceDirectory>src</sourceDirectory>
+      <plugins>
+          <plugin>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-compiler-plugin</artifactId>
+              <version>3.1</version>
+              <configuration>
+                  <source>1.7</source>
+                  <target>1.7</target>
+              </configuration>
+          </plugin>
+      </plugins>
+  </build>
+</project>

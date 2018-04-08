@@ -1,0 +1,58 @@
+From 9d179dc3082b10e2d9506ed61732775c4afc18d6 Mon Sep 17 00:00:00 2001
+From: Yiqun Zhang <github@yzhang.io>
+Date: Fri, 30 Mar 2018 08:07:40 -0400
+Subject: [PATCH] Add shade
+
+---
+ .gitignore         |  2 ++
+ pmml-model/pom.xml | 25 +++++++++++++++++++++++++
+ 2 files changed, 27 insertions(+)
+ create mode 100644 .gitignore
+
+diff --git a/.gitignore b/.gitignore
+new file mode 100644
+index 0000000..8b8c81d
+--- /dev/null
++++ b/.gitignore
+@@ -0,0 +1,2 @@
++target/
++dependency-reduced-pom.xml
+diff --git a/pmml-model/pom.xml b/pmml-model/pom.xml
+index 7d300e1..ab3a1c5 100644
+--- a/pmml-model/pom.xml
++++ b/pmml-model/pom.xml
+@@ -68,6 +68,31 @@
+ 		</testResources>
+ 
+ 		<plugins>
++			<plugin>
++			    <groupId>org.apache.maven.plugins</groupId>
++			    <artifactId>maven-shade-plugin</artifactId>
++			    <version>3.1.0</version>
++			    <executions>
++			        <execution>
++			            <phase>package</phase>
++			            <goals>
++			                <goal>shade</goal>
++			            </goals>
++			            <configuration>
++			                <relocations>
++			                    <relocation>
++			                        <pattern>org.dmg.pmml</pattern>
++			                        <shadedPattern>org.shaded.dmg.pmml</shadedPattern>
++			                    </relocation>
++			                    <relocation>
++			                        <pattern>org.jpmml</pattern>
++			                        <shadedPattern>org.shaded.jpmml</shadedPattern>
++			                    </relocation>
++			                </relocations>
++			            </configuration>
++			        </execution>
++			    </executions>
++			</plugin>
+ 			<plugin>
+ 				<groupId>org.apache.maven.plugins</groupId>
+ 				<artifactId>maven-jar-plugin</artifactId>
+-- 
+2.15.1 (Apple Git-101)
+

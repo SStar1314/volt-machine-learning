@@ -1,0 +1,105 @@
+From 87a7fe3d535b593120fa93560733278ba0713e7c Mon Sep 17 00:00:00 2001
+From: Yiqun Zhang <github@yzhang.io>
+Date: Fri, 30 Mar 2018 08:15:19 -0400
+Subject: [PATCH] Shade the class to solve the dependency issue
+
+---
+ .gitignore                                         |  2 ++
+ pom.xml                                            | 19 +++++++++++++++++--
+ src/main/java/org/jpmml/sparkml/ConverterUtil.java | 20 ++++++++++++++------
+ 3 files changed, 33 insertions(+), 8 deletions(-)
+ create mode 100644 .gitignore
+
+diff --git a/.gitignore b/.gitignore
+new file mode 100644
+index 0000000..aa2d97a
+--- /dev/null
++++ b/.gitignore
+@@ -0,0 +1,2 @@
++target
++dependency-reduced-pom.xml
+diff --git a/pom.xml b/pom.xml
+index 76961a9..773d77d 100644
+--- a/pom.xml
++++ b/pom.xml
+@@ -54,6 +54,12 @@
+ 			<artifactId>spark-mllib_2.11</artifactId>
+ 			<version>2.3.0</version>
+ 			<scope>provided</scope>
++			<exclusions>
++				<exclusion>
++					<groupId>org.jpmml</groupId>
++					<artifactId>pmml-model</artifactId>
++				</exclusion>
++			</exclusions>
+ 		</dependency>
+ 
+ 		<dependency>
+@@ -170,7 +176,16 @@
+ 							<goal>shade</goal>
+ 						</goals>
+ 						<configuration>
+-							<finalName>converter-executable-${project.version}</finalName>
++							<relocations>
++								<relocation>
++									<pattern>org.dmg.pmml</pattern>
++									<shadedPattern>org.shaded.dmg.pmml</shadedPattern>
++								</relocation>
++								<relocation>
++									<pattern>org.jpmml</pattern>
++									<shadedPattern>org.shaded.jpmml</shadedPattern>
++								</relocation>
++							</relocations>
+ 							<filters>
+ 								<filter>
+ 									<artifact>*:*</artifact>
+@@ -183,7 +198,7 @@
+ 							</filters>
+ 							<transformers>
+ 								<transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+-									<mainClass>org.jpmml.sparkml.Main</mainClass>
++									<mainClass>org.shaded.jpmml.sparkml.Main</mainClass>
+ 								</transformer>
+ 							</transformers>
+ 						</configuration>
+diff --git a/src/main/java/org/jpmml/sparkml/ConverterUtil.java b/src/main/java/org/jpmml/sparkml/ConverterUtil.java
+index 6dd58be..4670df4 100644
+--- a/src/main/java/org/jpmml/sparkml/ConverterUtil.java
++++ b/src/main/java/org/jpmml/sparkml/ConverterUtil.java
+@@ -340,9 +340,13 @@ public class ConverterUtil {
+ 			try {
+ 				clazz = (Class)classLoader.loadClass(key);
+ 			} catch(ClassNotFoundException cnfe){
+-				logger.warn("Failed to load transformer class", cnfe);
+-
+-				continue;
++				try {
++					String newkey = key.replaceAll("org", "org\\.shaded");
++					clazz = (Class)classLoader.loadClass(newkey);
++				} catch(ClassNotFoundException cnfe2){
++					logger.warn("Failed to load transformer class", cnfe2);
++					continue;
++				}
+ 			}
+ 
+ 			Class<? extends TransformerConverter<?>> converterClazz;
+@@ -350,9 +354,13 @@ public class ConverterUtil {
+ 			try {
+ 				converterClazz = (Class)classLoader.loadClass(value);
+ 			} catch(ClassNotFoundException cnfe){
+-				logger.warn("Failed to load transformer converter class", cnfe);
+-
+-				continue;
++				try {
++					String newvalue = value.replaceAll("org", "org\\.shaded");
++					converterClazz = (Class)classLoader.loadClass(newvalue);
++				} catch(ClassNotFoundException cnfe2){
++					logger.warn("Failed to load transformer converter class", cnfe2);
++					continue;
++				}
+ 			}
+ 
+ 			putConverterClazz(clazz, converterClazz);
+-- 
+2.15.1 (Apple Git-101)
+
