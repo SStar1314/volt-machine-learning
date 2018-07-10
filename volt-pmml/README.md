@@ -37,7 +37,7 @@ This `model.pmml` file is also included in the repository.
 
 #### Use VoltDB UDF to parse the PMML model and score the data:
 
-1. Copy all the jar files in the `lib` folder to `${VOLTDB_INSTALLATION_PATH}/lib`.
+1. Copy all the jar files in the `Scorer/lib` folder to `${VOLTDB_INSTALLATION_PATH}/lib`.
 2. Start a VoltDB server:
 ```
   voltdb init --force
